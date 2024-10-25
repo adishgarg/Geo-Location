@@ -1,30 +1,33 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine';
 
 const MapComponent = () => {
+  const map = useRef(null); // To store the map instance
+  const userMarker = useRef(null); // To store the user marker
+  const routingControl = useRef(null); // To store the routing control instance
   useEffect(() => {
     // Check if the map is already initialized
     if (L.DomUtil.get('map') !== null) {
       L.DomUtil.get('map')._leaflet_id = null;
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-          const userLat = position.coords.latitude;
-          const userLng = position.coords.longitude;
-          L.marker([userLat, userLng]).addTo(map).bindPopup('You are here').openPopup();
-          map.setView([userLat, userLng], 15);
+      // if (navigator.geolocation) {
+      //   navigator.geolocation.watchPosition(position => {
+      //     const userLat = position.coords.latitude;
+      //     const userLng = position.coords.longitude;
+      //     L.marker([userLat, userLng]).addTo(map).bindPopup('You are here').openPopup();
+      //     map.setView([userLat, userLng], 15);
     
-          // Routing
-          L.Routing.control({
-            waypoints: [
-              L.latLng(userLat, userLng),
-              L.latLng([30.51505986493433, 76.6607994540213])
-            ],
-            routeWhileDragging: true
-          }).addTo(map);
-        });
-      }
+      //     // Routing
+      //     L.Routing.control({
+      //       waypoints: [
+      //         L.latLng(userLat, userLng),
+      //         L.latLng([30.51505986493433, 76.6607994540213])
+      //       ],
+      //       routeWhileDragging: true
+      //     }).addTo(map);
+      //   });
+      // }
     }
 
     // Initialize the map
@@ -77,6 +80,40 @@ const MapComponent = () => {
       .bindPopup('Rockfeller')
       .openPopup();
     
+       if (navigator.geolocation) {
+        const watchId = navigator.geolocation.watchPosition((position) => {
+          const userLat = position.coords.latitude;
+          const userLng = position.coords.longitude;
+      
+          // Update the marker's position
+          if (userMarker) {
+            userMarker.setLatLng([userLat, userLng]).update();
+          } else {
+            // Create a new marker if it doesn't exist
+            userMarker = L.marker([userLat, userLng]).addTo(map)
+              .bindPopup('Your Location')
+              .openPopup();
+          }
+      
+          // Update the route dynamically
+          routingControl.setWaypoints([
+            L.latLng(userLat, userLng),
+            L.latLng(30.51505986493433, 76.6607994540213) // University location
+          ]);
+        }, (error) => {
+          console.error('Error watching position:', error);
+        }, {
+          enableHighAccuracy: true,
+          maximumAge: 10000,
+          timeout: 10000
+        });
+      
+        // Stop watching position when needed
+        return () => {
+          navigator.geolocation.clearWatch(watchId);
+          map.remove();
+        };
+      }
       
     // Cleanup function to remove the map on component unmount
     return () => {
