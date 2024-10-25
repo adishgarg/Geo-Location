@@ -131,10 +131,10 @@ const MapComponent = () => {
           if (!map) {
             map = L.map('map', {
               center: [30.516143776540222, 76.6597691858834],
-              maxZoom: 18,
+              maxZoom: 20,
               zoom: 18,
-              maxBounds: [ 1,1],
-              maxBoundsViscosity: 1.0,
+              maxBounds: [1,1],
+              // maxBoundsViscosity: 1.0,
             });
 
             // Add tile layer to the map
