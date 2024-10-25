@@ -102,13 +102,14 @@ const MapComponent = () => {
     // Function to initialize map and routing
     const initializeMap = (userLat, userLng) => {
       // Set map view to user's location
-      map.setView([30.516143776540222, 76.6597691858834], 15);
+      map.setView([userLat, userLng], 15);
 
       // Add marker for user's location
       const userMarker = L.marker([userLat, userLng])
         .addTo(map)
         .bindPopup('You are here')
-        .openPopup();
+        .openPopup()
+        .dragging.disable();
 
       // Add routing from user's location to a predefined destination
       L.Routing.control({
@@ -116,7 +117,7 @@ const MapComponent = () => {
           L.latLng(userLat, userLng),
           L.latLng([30.51505986493433, 76.6607994540213])
         ],
-        routeWhileDragging: true
+        // routeWhileDragging: true
       }).addTo(map);
     };
 
@@ -130,16 +131,15 @@ const MapComponent = () => {
           // Initialize map only if it hasn't been created yet
           if (!map) {
             map = L.map('map', {
-              center: [30.516143776540222, 76.6597691858834],
-              maxZoom: 20,
-              zoom: 18,
-              maxBounds: [1,1],
+              center: [userLat, userLng],
+              // zoom: 18,
+              // maxBounds: [ 1,1],
               // maxBoundsViscosity: 1.0,
             });
 
             // Add tile layer to the map
             L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-              maxZoom: 19,
+              // maxZoom: 19,
             }).addTo(map);
 
             // Add markers for different locations
