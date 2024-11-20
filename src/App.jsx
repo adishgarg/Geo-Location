@@ -133,8 +133,8 @@ const CampusNavigation = () => {
   };
 
   return (
-    <div className="bg-gray-900 text-gray-100 min-h-screen flex flex-col">
-      <header className="text-center py-6 bg-gray-800 shadow-md">
+    <div className="bg-black text-gray-100 min-h-screen flex flex-col">
+      <header className="text-center py-6 bg-black shadow-md">
         <h1 className="text-4xl font-semibold">Campus Navigation</h1>
         <p className="text-gray-400 mt-2">
           Navigate through the campus with ease.
@@ -153,7 +153,7 @@ const CampusNavigation = () => {
               id="destination"
               value={selectedDestination || ""}
               onChange={handleDestinationChange}
-              className="w-full px-4 py-2 rounded-md bg-gray-800 text-gray-100 border border-gray-700"
+              className="w-full px-4 py-2 rounded-md bg-black text-gray-100 border border-gray-700"
             >
               <option value="" disabled>
                 -- Choose a location --
