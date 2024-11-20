@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import L, { popup } from "leaflet";
 import "leaflet-routing-machine";
 import "leaflet/dist/leaflet.css";
+import './output.css'
 
 // Custom Icons
 import userIconUrl from "/location.png";
@@ -17,7 +18,7 @@ const CampusNavigation = () => {
   // Predefined destinations
   const destinations = {
     Library: [30.515880480909264, 76.66056727660482],
-    "Main Gate": [30.517957899557707, 76.65921217998608],
+    "Main Gate": [30.517973604500913, 76.6592018126612],
     "Square One (Canteen)": [30.51505883284976, 76.65986475664138],
     Tesla: [30.51582339110766, 76.65650172720511],
     "Fleming Block": [30.515806325807738, 76.6605231391317],
@@ -28,10 +29,7 @@ const CampusNavigation = () => {
     Barista: [30.51587630073014, 76.65683266571116],
     "Square Two (Canteen)": [30.517414595741453, 76.66070913580434],
   };
-  const campusBounds = [
-    [30.51855422466877, 76.66189106834939], // Southwest corner
-    [30.511616952438004, 76.65559182244911], // Northeast corner
-  ];
+
   // Create custom icons
   const userIcon = L.icon({
     iconUrl: userIconUrl,
@@ -61,7 +59,6 @@ const CampusNavigation = () => {
       { icon: userIcon },
       popup("User")
     ).addTo(map);
-    
 
     routingControlRef.current = L.Routing.control({
       waypoints: [],
@@ -71,7 +68,7 @@ const CampusNavigation = () => {
       draggableWaypoints: false,
       addWaypoints: false,
       createMarker: function () {
-        return null; 
+        return null;
       },
     }).addTo(map);
 
@@ -88,7 +85,7 @@ const CampusNavigation = () => {
           (position) => {
             const { latitude, longitude } = position.coords;
             const newLatLng = [latitude, longitude];
-  
+
             if (userMarkerRef.current) {
               userMarkerRef.current.setLatLng(newLatLng);
             }
@@ -101,16 +98,15 @@ const CampusNavigation = () => {
         console.error("Geolocation is not supported by this browser.");
       }
     };
-  
+
     // Update user location on component mount and set an interval for continuous tracking
     updateUserLocation();
     const interval = setInterval(updateUserLocation, 5000);
-  
+
     return () => {
       clearInterval(interval);
     };
   }, []);
-  
 
   const handleDestinationChange = (event) => {
     const destinationName = event.target.value;
@@ -137,39 +133,49 @@ const CampusNavigation = () => {
   };
 
   return (
-    <div>
-      <h1 style={{ textAlign: "center", marginTop: "20px" }}>
-        Campus Navigation
-      </h1>
-      <div style={{ textAlign: "center", marginBottom: "10px" }}>
-        <label htmlFor="destination" style={{ fontWeight: "bold" }}>
-          Select Destination:{" "}
-        </label>
-        <select
-          id="destination"
-          value={selectedDestination || ""}
-          onChange={handleDestinationChange}
-          style={{
-            padding: "5px",
-            fontSize: "16px",
-            borderRadius: "5px",
-            border: "1px solid #ccc",
-          }}
-        >
-          <option value="" disabled>
-            -- Choose a location --
-          </option>
-          {Object.keys(destinations).map((name) => (
-            <option key={name} value={name}>
-              {name}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div
-        ref={mapRef}
-        style={{ width: "100%", height: "80vh", margin: "20px auto" }}
-      ></div>
+    <div className="bg-gray-900 text-gray-100 min-h-screen flex flex-col">
+      <header className="text-center py-6 bg-gray-800 shadow-md">
+        <h1 className="text-4xl font-semibold">Campus Navigation</h1>
+        <p className="text-gray-400 mt-2">
+          Navigate through the campus with ease.
+        </p>
+      </header>
+      <main className="flex-grow">
+        <div className="container mx-auto p-4">
+          <div className="mb-4">
+            <label
+              htmlFor="destination"
+              className="block mb-2 text-lg font-medium"
+            >
+              Select Destination:
+            </label>
+            <select
+              id="destination"
+              value={selectedDestination || ""}
+              onChange={handleDestinationChange}
+              className="w-full px-4 py-2 rounded-md bg-gray-800 text-gray-100 border border-gray-700"
+            >
+              <option value="" disabled>
+                -- Choose a location --
+              </option>
+              {Object.keys(destinations).map((name) => (
+                <option key={name} value={name}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div
+            ref={mapRef}
+            className="w-full h-[70vh] rounded-lg overflow-hidden shadow-lg"
+          ></div>
+        </div>
+      </main>
+      <footer className="text-center py-4 bg-gray-800">
+        <p className="text-gray-400">
+          &copy; {new Date().getFullYear()} Campus Navigation App
+        </p>
+      </footer>
     </div>
   );
 };
