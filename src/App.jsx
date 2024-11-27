@@ -175,11 +175,6 @@ const CampusNavigation = () => {
           ></div>
         </div>
       </main>
-      <footer className="text-center py-4 bg-gray-800">
-        <p className="text-gray-400">
-          &copy; {new Date().getFullYear()} Campus Navigation App
-        </p>
-      </footer>
     </div>
   );
 };
