@@ -83,6 +83,12 @@ const CampusNavigation = () => {
   }, []);
 
   useEffect(() => {
+    
+    alert("Guidelines:\n\n" +
+      "1. Please use Google Chrome for better performance.\n" +
+      "2. Make sure to grant location access to enable accurate tracking.\n" +
+      "3. Use your mobile device for more accurate location data.");
+
     const updateUserLocation = () => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
