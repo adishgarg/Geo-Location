@@ -83,25 +83,31 @@ const CampusNavigation = () => {
       "2. Make sure to grant location access to enable accurate tracking.\n" +
       "3. Use your mobile device for more accurate location data.");
 
-    const updateUserLocation = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            const newLatLng = [latitude, longitude];
-
-            if (userMarkerRef.current) {
-              userMarkerRef.current.setLatLng(newLatLng);
+      const updateUserLocation = () => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude, longitude } = position.coords;
+              const newLatLng = [latitude, longitude];
+      
+              if (userMarkerRef.current) {
+                userMarkerRef.current.setLatLng(newLatLng);
+              }
+            },
+            (error) => {
+              console.error("Error fetching location:", error);
+            },
+            {
+              enableHighAccuracy: true, // Request high accuracy location
+              timeout: 10000, // Maximum time to wait for a position (in ms)
+              maximumAge: 0, // Prevent using cached location
             }
-          },
-          (error) => {
-            console.error("Error fetching location:", error);
-          }
-        );
-      } else {
-        console.error("Geolocation is not supported by this browser.");
-      }
-    };
+          );
+        } else {
+          console.error("Geolocation is not supported by this browser.");
+        }
+      };
+      
 
     updateUserLocation();
     const interval = setInterval(updateUserLocation, 5000);
