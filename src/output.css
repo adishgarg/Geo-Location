@@ -128,6 +128,10 @@
   /* 2 */
 }
 
+.leaflet-routing-container .leaflet-routing-alt {
+  color: black !important; /* Ensure the text color is applied */
+}
+
 ::before,
 ::after {
   --tw-content: '';

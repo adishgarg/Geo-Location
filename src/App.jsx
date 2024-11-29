@@ -4,18 +4,16 @@ import "leaflet-routing-machine";
 import "leaflet/dist/leaflet.css";
 import './output.css'
 
-// Custom Icons
 import userIconUrl from "/location.png";
 import destinationIconUrl from "/map.png";
 
 const CampusNavigation = () => {
   const mapRef = useRef(null);
   const routingControlRef = useRef(null);
-  const userMarkerRef = useRef(null); // Reference for the user marker
-  const destinationMarkerRef = useRef(null); // Reference for the destination marker
+  const userMarkerRef = useRef(null); 
+  const destinationMarkerRef = useRef(null); 
   const [selectedDestination, setSelectedDestination] = useState(null);
 
-  // Predefined destinations
   const destinations = {
     Library: [30.515880480909264, 76.66056727660482],
     "Main Gate": [30.517973604500913, 76.6592018126612],
@@ -48,16 +46,13 @@ const CampusNavigation = () => {
   });
 
   useEffect(() => {
-    // Initialize the map
     const map = L.map(mapRef.current).setView([30.516198, 76.65973], 16);
 
-    // Add OpenStreetMap tile layer
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
 
-    // Add user marker initially
     userMarkerRef.current = L.marker(
       [30.516198, 76.65973],
       { icon: userIcon },
@@ -76,7 +71,6 @@ const CampusNavigation = () => {
       },
     }).addTo(map);
 
-    // Cleanup on unmount
     return () => {
       map.remove();
     };
@@ -109,7 +103,6 @@ const CampusNavigation = () => {
       }
     };
 
-    // Update user location on component mount and set an interval for continuous tracking
     updateUserLocation();
     const interval = setInterval(updateUserLocation, 5000);
 
@@ -177,7 +170,7 @@ const CampusNavigation = () => {
           </div>
           <div
             ref={mapRef}
-            className="w-full h-[70vh] rounded-lg overflow-hidden shadow-lg"
+            className="w-full h-[70vh] rounded-lg overflow-hidden shadow-lg text-black"
           ></div>
         </div>
       </main>
