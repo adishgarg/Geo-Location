@@ -752,3 +752,33 @@ video {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
+
+/* ===== Custom Block Labels ===== */
+.block-label {
+  background: transparent;
+  border: none;
+  color: #555555;   /* ✅ grey text */
+  font-weight: 600;
+  font-size: 13px;
+  padding: 0;
+  white-space: nowrap;
+  text-shadow: 0 0 2px #ffffff90; /* slight highlight like OSM */
+}
+
+/* Optional: nicer polygon stroke */
+.leaflet-interactive {
+  stroke-width: 2px;
+}
+
+
+.leaflet-interactive:hover {
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+
+.leaflet-tooltip.block-label {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+}
