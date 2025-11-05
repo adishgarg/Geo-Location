@@ -7,6 +7,7 @@ import "./output.css";
 
 import userIconUrl from "/location.png";
 import destinationIconUrl from "/map.png";
+import mainGateIconUrl from "/main-gate.png"; 
 
 const CampusNavigation = () => {
   const mapRef = useRef(null);
@@ -46,6 +47,12 @@ const CampusNavigation = () => {
     iconAnchor: [15, 30],
   });
 
+  const mainGateIcon = L.icon({
+    iconUrl: mainGateIconUrl,
+    iconSize: [15, 15],
+  iconAnchor: [12, 25],
+  });
+
   useEffect(() => {
     const map = L.map(mapRef.current).setView([30.516198, 76.65973], 16);
 
@@ -82,19 +89,18 @@ const CampusNavigation = () => {
       [30.51428, 76.66020],
     ];
 
-   const martinPoly = L.polygon(martinLutherCoords, {
-          color: "#888",
-          weight: 1,
-          fillColor: "#c6c3bd",   // subtle beige/grey similar to OSM building
-          fillOpacity: 0.45
+    const martinPoly = L.polygon(martinLutherCoords, {
+      color: "#888",
+      weight: 1,
+      fillColor: "#c6c3bd", // subtle beige/grey similar to OSM building
+      fillOpacity: 0.45,
     }).addTo(map);
 
     martinPoly.bindTooltip("Martin Luther Block", {
       permanent: true,
       direction: "center",
-      className: "block-label"
-});
-
+      className: "block-label",
+    });
 
     // --- Rockefeller Block (approx polygon) ---
     const rockefellerCoords = [
@@ -105,18 +111,44 @@ const CampusNavigation = () => {
     ];
 
     const rockefellerPoly = L.polygon(rockefellerCoords, {
-        color: "#888",
-        weight: 1,
-        fillColor: "#c6c3bd",
-        fillOpacity: 0.45
-      }).addTo(map);
+      color: "#888",
+      weight: 1,
+      fillColor: "#c6c3bd",
+      fillOpacity: 0.45,
+    }).addTo(map);
 
     rockefellerPoly.bindTooltip("Rockefeller Block", {
-        permanent: true,
-        direction: "center",
-        className: "block-label"
-      });
+      permanent: true,
+      direction: "center",
+      className: "block-label",
+    });
 
+    //-----------------------------
+    // ✅ ADD MAIN GATE ICON + TEXT
+    //-----------------------------
+    // const mainGateCoords = [30.518167, 76.659000];
+    const mainGateCoords = [30.517917, 76.659222];
+
+    const mainGateMarker = L.marker(mainGateCoords, { icon: mainGateIcon }).addTo(map);
+
+    // ✅ Tilt the Main Gate icon diagonally towards the left
+  setTimeout(() => {
+    const iconElement = mainGateMarker._icon;
+    if (iconElement) {
+      iconElement.style.transform = "rotate(-25deg) scale(1)";
+      iconElement.style.transition = "transform 0.3s ease";
+    }
+  }, 200);
+
+
+
+    // Tooltip text with same style as Martin Luther
+    mainGateMarker.bindTooltip("Main Gate", {
+      permanent: true,
+      direction: "top",
+      offset: [0, -20],
+      className: "block-label", // uses same CSS class
+    });
 
     return () => {
       map.remove();
