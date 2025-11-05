@@ -83,11 +83,12 @@ const CampusNavigation = () => {
 
     // --- Martin Luther Block (approx polygon) ---
     const martinLutherCoords = [
-      [30.51452, 76.66016],
-      [30.51458, 76.66034],
-      [30.51434, 76.66041],
-      [30.51428, 76.66020],
-    ];
+            [30.51441976364978, 76.66018796680291],  
+            [30.51445,          76.66034],
+            [30.51418,          76.66041],
+            [30.51415,          76.66020],
+      ];
+
 
     const martinPoly = L.polygon(martinLutherCoords, {
       color: "#888",
