@@ -12,11 +12,13 @@ import mainGateIconUrl from "/main-gate.png";
 const CampusNavigation = () => {
   const mapRef = useRef(null);
   const routingControlRef = useRef(null);
+  const routingControl2Ref = useRef(null); // Second routing control for alternative route
   const userMarkerRef = useRef(null);
   const destinationMarkerRef = useRef(null);
   const [selectedDestination, setSelectedDestination] = useState(null);
 
   const destinations = {
+     "IBN Mess": [30.514808696452203, 76.66239862640317],
     Library: [30.515880480909264, 76.66056727660482],
     "Main Gate": [30.517973604500913, 76.6592018126612],
     "Square One (Canteen)": [30.51505883284976, 76.65986475664138],
@@ -33,6 +35,7 @@ const CampusNavigation = () => {
     "Boys Hostel Gate": [30.514310522972274, 76.66075476547918],
     "Girls Hostel Gate": [30.5154556145917, 76.66184148392217],
     "Beta Zone": [30.51569434291585, 76.65981910052695],
+    // Added IBN Mess coordinates
   };
 
   const userIcon = L.icon({
@@ -67,6 +70,7 @@ const CampusNavigation = () => {
       popup("User")
     ).addTo(map);
 
+    // Primary routing control (Boys route - Blue)
     routingControlRef.current = L.Routing.control({
       waypoints: [],
       lineOptions: {
@@ -76,6 +80,23 @@ const CampusNavigation = () => {
       addWaypoints: false,
       createMarker: () => null,
     }).addTo(map);
+
+    // Secondary routing control (Girls route - Pink)
+    routingControl2Ref.current = L.Routing.control({
+      waypoints: [],
+      lineOptions: {
+        styles: [{ color: "#FF69B4", weight: 4 }], // Pink color
+      },
+      draggableWaypoints: false,
+      addWaypoints: false,
+      createMarker: () => null,
+      routeWhileDragging: false,
+    }).addTo(map);
+
+    // Hide the second route initially
+    if (routingControl2Ref.current._container) {
+      routingControl2Ref.current._container.style.display = 'none';
+    }
 
     //-----------------------------
     // ✅ ADD POLYGONS + LABELS
@@ -202,11 +223,45 @@ const CampusNavigation = () => {
     if (routingControlRef.current && destinationName) {
       const destinationCoords = destinations[destinationName];
 
-      routingControlRef.current.setWaypoints([
-        userMarkerRef.current.getLatLng(),
-        L.latLng(...destinationCoords),
-      ]);
+      if (destinationName === "IBN Mess") {
+        // For IBN Mess, show both routes
+        const userCoords = userMarkerRef.current.getLatLng();
+        const boysHostelCoords = destinations["Boys Hostel Gate"];
+        const girlsHostelCoords = destinations["Girls Hostel Gate"];
 
+        // Boys route (Blue)
+        routingControlRef.current.setWaypoints([
+          userCoords,
+          L.latLng(...boysHostelCoords),
+          L.latLng(...destinationCoords),
+        ]);
+
+        // Girls route (Pink)
+        routingControl2Ref.current.setWaypoints([
+          userCoords,
+          L.latLng(...girlsHostelCoords),
+          L.latLng(...destinationCoords),
+        ]);
+
+        // Show the second route
+        if (routingControl2Ref.current._container) {
+          routingControl2Ref.current._container.style.display = 'block';
+        }
+      } else {
+        // For other destinations, use only the primary route
+        routingControlRef.current.setWaypoints([
+          userMarkerRef.current.getLatLng(),
+          L.latLng(...destinationCoords),
+        ]);
+
+        // Hide the second route
+        routingControl2Ref.current.setWaypoints([]);
+        if (routingControl2Ref.current._container) {
+          routingControl2Ref.current._container.style.display = 'none';
+        }
+      }
+
+      // Handle destination marker
       if (!destinationMarkerRef.current) {
         destinationMarkerRef.current = L.marker(destinationCoords, {
           icon: destinationIcon,
@@ -251,6 +306,25 @@ const CampusNavigation = () => {
               ))}
             </select>
           </div>
+
+          {/* Route instructions for IBN Mess */}
+          {selectedDestination === "IBN Mess" && (
+            <div className="mb-4 bg-gray-900 border border-gray-700 rounded-lg p-4">
+              <h3 className="text-lg font-medium mb-3">Route Instructions for IBN Mess:</h3>
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center gap-3">
+                  <span className="inline-block w-6 h-3 bg-blue-400 rounded"></span>
+                  <span className="font-medium text-blue-300">Boys: </span>
+                  <span>Follow the blue route (via Boys Hostel)</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="inline-block w-6 h-3 bg-pink-400 rounded"></span>
+                  <span className="font-medium text-pink-300">Girls: </span>
+                  <span>Follow the pink route (via Girls Hostel)</span>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div
             ref={mapRef}
