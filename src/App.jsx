@@ -79,6 +79,8 @@ const CampusNavigation = () => {
       draggableWaypoints: false,
       addWaypoints: false,
       createMarker: () => null,
+      show: false, // Hide the instructions panel
+      routeWhileDragging: false,
     }).addTo(map);
 
     // Secondary routing control (Girls route - Pink)
@@ -90,13 +92,19 @@ const CampusNavigation = () => {
       draggableWaypoints: false,
       addWaypoints: false,
       createMarker: () => null,
+      show: false, // Hide the instructions panel
       routeWhileDragging: false,
     }).addTo(map);
 
-    // Hide the second route initially
-    if (routingControl2Ref.current._container) {
-      routingControl2Ref.current._container.style.display = 'none';
-    }
+    // Hide the routing instructions containers completely
+    setTimeout(() => {
+      if (routingControlRef.current._container) {
+        routingControlRef.current._container.style.display = 'none';
+      }
+      if (routingControl2Ref.current._container) {
+        routingControl2Ref.current._container.style.display = 'none';
+      }
+    }, 100);
 
     //-----------------------------
     // ✅ ADD POLYGONS + LABELS
@@ -243,10 +251,6 @@ const CampusNavigation = () => {
           L.latLng(...destinationCoords),
         ]);
 
-        // Show the second route
-        if (routingControl2Ref.current._container) {
-          routingControl2Ref.current._container.style.display = 'block';
-        }
       } else {
         // For other destinations, use only the primary route
         routingControlRef.current.setWaypoints([
@@ -256,9 +260,6 @@ const CampusNavigation = () => {
 
         // Hide the second route
         routingControl2Ref.current.setWaypoints([]);
-        if (routingControl2Ref.current._container) {
-          routingControl2Ref.current._container.style.display = 'none';
-        }
       }
 
       // Handle destination marker
